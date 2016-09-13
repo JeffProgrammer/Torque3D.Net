@@ -27,7 +27,13 @@ using System.Runtime.InteropServices;
 
 namespace Torque3D {
 	struct NativeMain {
-		[DllImport("Torque3D.dll", EntryPoint = "TorqueMain")]
+#if DEBUG
+		public const string dll = "Torque3D_DEBUG";
+#else
+		public const string dll = "Torque3D";
+#endif
+
+		[DllImport(dll, EntryPoint = "TorqueMain")]
 		public static extern int TorqueMain(int argc, IntPtr[] argv);
 	}
 

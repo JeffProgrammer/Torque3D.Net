@@ -26,14 +26,25 @@ using System;
 using System.Runtime.InteropServices;
 
 namespace Torque3D {
-	struct NativeMain {
+	/// <summary>
+	/// A static struct that holds the torque library DLL name constant.
+	/// </summary>
+	public struct NativeDLL {
+		/// <summary>
+		/// The constant name of the torque3D library.
+		/// </summary>
 #if DEBUG
-		public const string dll = "Torque3D_DEBUG";
+		public const string torqueLib = "Torque3D_DEBUG";
 #else
-		public const string dll = "Torque3D";
+		public const string torqueLib = "Torque3D";
 #endif
+	}
 
-		[DllImport(dll, EntryPoint = "TorqueMain")]
+	/// <summary>
+	/// A struct that holds the native function pointer for the main routine.
+	/// </summary>
+	struct NativeMain {
+		[DllImport(NativeDLL.torqueLib, EntryPoint = "TorqueMain")]
 		public static extern int TorqueMain(int argc, IntPtr[] argv);
 	}
 

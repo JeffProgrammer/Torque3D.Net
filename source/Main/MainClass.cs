@@ -34,22 +34,29 @@ namespace Torque3D {
 		/// The constant name of the torque3D library.
 		/// </summary>
 #if DEBUG
-		public const string torqueLib = "Torque3D_DEBUG";
+		public const string torqueLib = "Torque3D";
 #else
 		public const string torqueLib = "Torque3D";
 #endif
+#if APPLE
+		public const string entryPoint = "torque_macmain";
+#else
+		public const string entryPoint = "TorqueMain";
+#endif
+	
 	}
 
 	/// <summary>
 	/// A struct that holds the native function pointer for the main routine.
 	/// </summary>
 	struct NativeMain {
-		[DllImport(NativeDLL.torqueLib, EntryPoint = "TorqueMain")]
+		[DllImport(NativeDLL.torqueLib, EntryPoint = NativeDLL.entryPoint)]
 		public static extern int TorqueMain(int argc, IntPtr[] argv);
 	}
 
 	class MainClass {
 		static int Main(string[] args) {
+			
 			// Marshal the strings from c# to native.
 			IntPtr[] argv = StringMarshal.StringArrayToIntPtrArray(args);
 

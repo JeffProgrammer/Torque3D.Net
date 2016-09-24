@@ -25,49 +25,53 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Torque3D {
-	/// <summary>
-	/// A static struct that holds the torque library DLL name constant.
-	/// </summary>
-	public struct NativeDLL {
-		/// <summary>
-		/// The constant name of the torque3D library.
-		/// </summary>
+namespace Torque3D
+{
+   /// <summary>
+   /// A static struct that holds the torque library DLL name constant.
+   /// </summary>
+   public struct NativeDLL
+   {
+      /// <summary>
+      /// The constant name of the torque3D library.
+      /// </summary>
 #if DEBUG
-		public const string torqueLib = "Torque3D";
+      public const string torqueLib = "Torque3D";
 #else
 		public const string torqueLib = "Torque3D";
 #endif
 #if APPLE
 		public const string entryPoint = "torque_macmain";
 #else
-		public const string entryPoint = "TorqueMain";
+      public const string entryPoint = "TorqueMain";
 #endif
-	
-	}
 
-	/// <summary>
-	/// A struct that holds the native function pointer for the main routine.
-	/// </summary>
-	struct NativeMain {
-		[DllImport(NativeDLL.torqueLib, EntryPoint = NativeDLL.entryPoint)]
-		public static extern int TorqueMain(int argc, IntPtr[] argv);
-	}
+   }
 
-	class MainClass {
-		static int Main(string[] args) {
-			
-			// Marshal the strings from c# to native.
-			IntPtr[] argv = StringMarshal.StringArrayToIntPtrArray(args);
+   /// <summary>
+   /// A struct that holds the native function pointer for the main routine.
+   /// </summary>
+   struct NativeMain
+   {
+      [DllImport(NativeDLL.torqueLib, EntryPoint = NativeDLL.entryPoint)]
+      public static extern int TorqueMain(int argc, IntPtr[] argv);
+   }
 
-			// Invoke Torque's main method.
-			int ret = NativeMain.TorqueMain(args.Length, argv);
+   class MainClass
+   {
+      public static int Main(string[] args)
+      {
+         // Marshal the strings from c# to native.
+         IntPtr[] argv = StringMarshal.StringArrayToIntPtrArray(args);
 
-			// Free the marshaled string as it resizes on the heap.
-			// the GC will not get it.
-			StringMarshal.FreeIntPtrArray(argv);
+         // Invoke Torque's main method.
+         int ret = NativeMain.TorqueMain(args.Length, argv);
 
-			return ret;
-		}
-	}
+         // Free the marshaled string as it resizes on the heap.
+         // the GC will not get it.
+         StringMarshal.FreeIntPtrArray(argv);
+
+         return ret;
+      }
+   }
 }

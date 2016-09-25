@@ -35,11 +35,19 @@ namespace Torque3D
       /// <summary>
       /// The constant name of the torque3D library.
       /// </summary>
-#if DEBUG
+#if APPLE
       public const string torqueLib = "Torque3D";
 #else
+   #if DEBUG
+      public const string torqueLib = "Torque3D_DEBUG";
+   #else
 		public const string torqueLib = "Torque3D";
+   #endif
 #endif
+
+      /// <summary>
+      /// The main entry point symbol.
+      /// </summary>
 #if APPLE
 		public const string entryPoint = "torque_macmain";
 #else
@@ -53,14 +61,22 @@ namespace Torque3D
    /// </summary>
    struct NativeMain
    {
+      public delegate void InitDelegate();
+
       [DllImport(NativeDLL.torqueLib, EntryPoint = NativeDLL.entryPoint)]
       public static extern int TorqueMain(int argc, IntPtr[] argv);
+
+      [DllImport(NativeDLL.torqueLib, EntryPoint = "set_init_callback")]
+      public static extern void SetInitCallback(InitDelegate callback);
    }
 
    class MainClass
    {
       public static int Main(string[] args)
       {
+         // Set init delegate
+         NativeMain.SetInitCallback(Init);
+
          // Marshal the strings from c# to native.
          IntPtr[] argv = StringMarshal.StringArrayToIntPtrArray(args);
 
@@ -72,6 +88,15 @@ namespace Torque3D
          StringMarshal.FreeIntPtrArray(argv);
 
          return ret;
+      }
+
+      /// <summary>
+      /// Called by the Torque3D engine whenever StandardMainLoop::init has 
+      /// been called.
+      /// </summary>
+      public static void Init()
+      {
+         Console.WriteLine("We have been initalized.");
       }
    }
 }
